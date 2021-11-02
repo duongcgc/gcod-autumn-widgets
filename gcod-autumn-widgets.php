@@ -15,12 +15,6 @@ define('GCOD_AUTUMN_WIDGETS_PATH', plugin_dir_path(__FILE__));
 // Define URL to plugin directory.
 define('GCOD_AUTUMN_WIDGETS_URL', plugin_dir_url(__FILE__));
 
-// Define path to theme directory.
-define('GCOD_AUTUMN_THEME_PATH', get_template_directory() . '/');
-
-// Define URL to theme directory.
-define('GCOD_AUTUMN_THEME_URL', get_template_directory_uri() . '/');
-
 class GcoAutumnWidgets {
     private static $instance;
     private $gcod_components_dir = 'widgets';
@@ -30,13 +24,12 @@ class GcoAutumnWidgets {
      * GcoAutumnWidgets constructor.
      */
     public function __construct() {
-        $this->setup();                
-        $this->widgets();        
+        $this->setup();
+        $this->widgets();
 
         // Load custom widgets assets
-        add_action('gcod_widgets_loader', array($this, 'gcod_custom_widgets_require_files'));                
-        add_action('wp_enqueue_scripts', array($this, 'gcod_custom_widgets_assets'));        
-        
+        add_action('gcod_widgets_loader', array($this, 'gcod_custom_widgets_require_files'));
+        add_action('wp_enqueue_scripts', array($this, 'gcod_custom_widgets_assets'));
     }
 
     public static function getInstance() {
@@ -49,6 +42,18 @@ class GcoAutumnWidgets {
     }
 
     public function setup() {
+
+        // Define path to theme directory.
+        if (!defined('GCOD_AUTUMN_THEME_PATH')) {
+            define('GCOD_AUTUMN_THEME_PATH', get_template_directory() . '/');
+        }
+
+        // Define URL to theme directory.
+        if (!defined('GCOD_AUTUMN_THEME_URL')) {
+            define('GCOD_AUTUMN_THEME_URL', get_template_directory_uri() . '/');
+        }
+
+
         if (!defined('GCOD_AUTUMN_WIDGETS_INC_PATH')) {
             define('GCOD_AUTUMN_WIDGETS_INC_PATH', plugin_dir_path(__FILE__) . $this->gcod_inc_dir);
         }
@@ -76,9 +81,10 @@ class GcoAutumnWidgets {
     // Widget loading from Plugin
     public function gcod_custom_widgets_require_files() {
 
-        $gcod_widget_list = array(            
+        $gcod_widget_list = array(
             // 'widget-welcome/widget-welcome.php',                // Welcome
-            'widget-photo/widget-photo.php'                // Photo
+            // 'widget-photo/widget-photo.php'                // Photo
+            'widget-gcod-lastest-news/widget-gcod-lastest-news.php'                // Photo
         );
 
         // Include files from plugin core.
@@ -104,7 +110,7 @@ class GcoAutumnWidgets {
             true,
             wp_get_theme()->get('Version')
         );
-    }  
+    }
 }
 
 // Init instance core to launch
