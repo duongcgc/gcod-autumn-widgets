@@ -30,6 +30,8 @@ class GcoAutumnWidgets {
         // Load custom widgets assets
         add_action('gcod_widgets_loader', array($this, 'gcod_custom_widgets_require_files'));
         add_action('wp_enqueue_scripts', array($this, 'gcod_custom_widgets_assets'));
+        // add_action('admin_enqueue_scripts', array($this, 'gcod_custom_widgets_assets'));       
+
     }
 
     public static function getInstance() {
@@ -82,9 +84,12 @@ class GcoAutumnWidgets {
     public function gcod_custom_widgets_require_files() {
 
         $gcod_widget_list = array(
-            // 'widget-welcome/widget-welcome.php',                // Welcome
-            // 'widget-photo/widget-photo.php'                // Photo
-            'widget-gcod-lastest-news/widget-gcod-lastest-news.php'                // Photo
+            // 'widget-welcome/widget-welcome.php',
+            'widget-photo/widget-photo.php',
+            'widget-posts/widget-posts.php',
+            'widget-follow-us/widget-follow-us.php',
+            'widget-newsletters/widget-newsletters.php',
+            'widget-title/widget-title.php',
         );
 
         // Include files from plugin core.
@@ -98,18 +103,60 @@ class GcoAutumnWidgets {
     function gcod_custom_widgets_assets() {
         wp_enqueue_style(
             'gcod-custom-widget-styles',
-            GCOD_AUTUMN_THEME_URL . 'assets/css/gcod-widgets.css',
+            get_template_directory_uri() . '/assets/css/gcod-widgets.css',
             false,
             wp_get_theme()->get('Version')
         );
 
-        wp_enqueue_script(
-            'gcod-custom-widget-scripts',
-            GCOD_AUTUMN_THEME_URL . 'assets/js/gcod-widgets.js',
-            array(),
+        // wp_enqueue_script(
+        //     'gcod-custom-widget-scripts',
+        //     get_template_directory_uri() . '/assets/js/gcod-widgets.js',
+        //     array(),
+        //     true,
+        //     wp_get_theme()->get('Version')
+        // );
+
+        wp_enqueue_style(
+            'gcod-fontawesome-styles',
+            plugin_dir_url(__FILE__) . 'assets/vendors/fontawesome/css/all.fontawesome.min.css',
+            false,
+            wp_get_theme()->get('Version')
+        );
+
+        wp_enqueue_style(
+            'gcod-slick-styles',
+            plugin_dir_url(__FILE__) . 'assets/vendors/slick/slick.min.css',
+            false,
+            wp_get_theme()->get('Version')
+        );
+        wp_register_script(
+            'gcod-slick-scripts',
+            plugin_dir_url(__FILE__) . 'assets/vendors/slick/slick.min.js',
+            array('jquery'),
             true,
             wp_get_theme()->get('Version')
         );
+        wp_enqueue_script('gcod-slick-scripts');
+
+        if (\Elementor\Plugin::$instance->preview->is_preview_mode()) {
+            wp_register_script(
+                'gcod-custom-widget-scripts',
+                plugin_dir_url(__FILE__) . 'assets/js/gcod-widget-editor.js',
+                array('jquery', 'gcod-slick-scripts'),
+                true,
+                wp_get_theme()->get('Version')
+            );
+            wp_enqueue_script('gcod-custom-widget-scripts');
+        } else {
+            wp_register_script(
+                'gcod-custom-widget-scripts',
+                plugin_dir_url(__FILE__) . 'assets/js/gcod-widget.js',
+                array('jquery', 'gcod-slick-scripts'),
+                true,
+                wp_get_theme()->get('Version')
+            );
+            wp_enqueue_script('gcod-custom-widget-scripts');
+        }
     }
 }
 

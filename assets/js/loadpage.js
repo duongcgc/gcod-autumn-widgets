@@ -1,1 +1,0 @@
-jQuery(document).ready(function($){'use strict';setTimeout(function(){jQuery('.loadpage').hide()},500)})
