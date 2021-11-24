@@ -16,6 +16,11 @@ class Gcowidgetfollowus_Widget extends WP_Widget {
 			'id' => 'title_text',
 			'type' => 'text',
 		),
+		// array(
+		// 	'label' => 'Follow URL',
+		// 	'id' => 'followus_url',
+		// 	'type' => 'text',
+		// ),
 	);
 
 	public function widget( $args, $instance ) {
@@ -28,7 +33,7 @@ class Gcowidgetfollowus_Widget extends WP_Widget {
 		// Output generated fields
 		// echo '<p>'.$instance['title_text'].'</p>';
 		$title_text = $instance['title_text'];
-		$urlfollowus_url = $instance['urlfollowus_url']; ?>
+		// $followus_url = $instance['followus_url']; ?>
 
 		<div class="widget_posts">
 			<?php if ($title_text) { ?>
