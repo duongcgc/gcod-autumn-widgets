@@ -31,14 +31,36 @@ class Gcowidgetpost_Widget extends WP_Widget {
 			'id' => 'style_select',
 			'type' => 'select',
 			'options' => array(
-				'Style 01',
-				'Style 02',
+				'Posts Style 01',
+				'Posts Style 02',
+				'Posts Style 03',
 			),
+		),
+		array(
+			'label' => 'Source',
+			'id' => 'source_select',
+			'type' => 'select',
+			'options' => array(
+				'All Posts',
+				'By Category',
+				'By Tag',
+			),
+		),
+		array(
+			'label' => 'Category Slug (if select by Category)',
+			'id' => 'category_name',
+			'type' => 'text',
+		),
+		array(
+			'label' => 'Tag Name (if select by Tag)',
+			'id' => 'tag_name',
+			'type' => 'text',
 		),
 	);
 
+
 	// Query post
-	function gcod_query_lastest_posts($number_item, $order = 'date') {
+	function gcod_query_lastest_posts($number_item, $order = 'date', $cat = '', $tag = '') {
 
 		// Setting from settings      
 		$number_of_item = $number_item;
@@ -46,11 +68,28 @@ class Gcowidgetpost_Widget extends WP_Widget {
 		$orderby = ($order_of_list == 'gcod-lastest') ? 'date' : 'comment_count';
 
 		// Query all posts
-		$args = array(
-			'order'           => 'DESC',
-			'orderby'         => $orderby,
-			'posts_per_page'  => $number_of_item,
-		);
+
+        if (($cat == '') && ($tag == '')) {
+            $args = array(
+            	'order'           => 'DESC',
+            	'orderby'         => $orderby,
+            	'posts_per_page'  => $number_of_item,
+        	);
+        }elseif (($cat != '') && ($tag == '')) {
+            $args = array(
+            	'order'           => 'DESC',
+            	'orderby'         => $orderby,
+            	'posts_per_page'  => $number_of_item,
+				'category_name'	  => $cat
+        	);
+        }elseif (($cat == '') && ($tag != '')) {
+            $args = array(
+            	'order'           => 'DESC',
+            	'orderby'         => $orderby,
+            	'posts_per_page'  => $number_of_item,
+				'tag'	  		  => $tag
+        	);
+        }
 
 		$the_query = new WP_Query($args);
 
@@ -65,18 +104,28 @@ class Gcowidgetpost_Widget extends WP_Widget {
 		}
 
 		// Output generated fields
-		//echo '<p>'.$instance['title_text'].'</p>';
-		//echo '<p>'.$instance['numberposts_number'].'</p>';
 		$title_text = $instance['title_text'];
 		$urltitle_url = $instance['urltitle_url'];
+		$source = $instance['source_select'];
+		$category_name = $instance['category_name'];
+		$tag_name = $instance['tag_name'];
+
+		echo 'sdfdfsdfsfd';
+
 		$numberposts_number = $instance['numberposts_number'];
 		if ($numberposts_number == '') {
 			$numberposts_number = 5;
 		}
 		$style_select = $instance['style_select'];
 
-		$the_query = $this->gcod_query_lastest_posts($numberposts_number);
 
+        if ($source == 'By Category') {	
+			$the_query = $this->gcod_query_lastest_posts($numberposts_number, $category_name);
+		}elseif ($source == 'By Tag') {
+			$the_query = $this->gcod_query_lastest_posts($numberposts_number, '', $tag_name);
+		}else {
+            $the_query = $this->gcod_query_lastest_posts($numberposts_number);
+        }
 ?>
 
 		<div class="widget_posts">
@@ -114,7 +163,60 @@ class Gcowidgetpost_Widget extends WP_Widget {
 								$cat_link = get_category_link($categories[0]);
 								$author_name = get_the_author();
 								$author_id = get_the_author_meta('ID');
-								$author_url = get_author_posts_url($author_id);								
+								$author_url = get_author_posts_url($author_id);
+
+						?>
+								<div class="item">
+									<div class="post">										 
+										<div class="image">
+											<a href="<?php echo get_the_permalink(); ?>" title="">
+												<image src="<?php the_post_thumbnail_url('gcod_thumbnail_sidebar_110'); ?>" alt="<?php echo esc_html($cat_name); ?>" />
+											</a>
+										</div>
+										<div class="content">
+											<div class="post-cat">
+												<a href="<?php echo esc_url($cat_link); ?>" title=""><?php echo esc_html($cat_name); ?></a>
+											</div>
+											<h4 class="post-name">
+												<a href="<?php echo get_the_permalink(); ?>" title=""><?php the_title(); ?></a>
+											</h4>
+											<ul class="post-meta">
+												<li>
+													<a href="<?php echo esc_url($author_url); ?>" title=""><?php echo esc_html($author_name); ?></a>
+												</li>
+												<li>
+													<span><?php echo get_the_date(); ?></span>
+												</li>
+											</ul>
+										</div>
+									</div>
+								</div> <!-- end item -->
+						<?php
+
+							endwhile;
+						endif;
+
+						// Reset Post Data
+						wp_reset_postdata();
+
+						?>
+					</div>
+				<?php } elseif ($style_select == 'Style 03') { ?>
+					<div class="posts__module posts__widget style-3">
+						<?php
+
+						// The Loop
+						if ($the_query->have_posts()) :
+
+							while ($the_query->have_posts()) : $the_query->the_post();
+
+								// Do Stuff
+								$categories = get_the_category();
+								$cat_name = $categories[0]->cat_name;
+								$cat_link = get_category_link($categories[0]);
+								$author_name = get_the_author();
+								$author_id = get_the_author_meta('ID');
+								$author_url = get_author_posts_url($author_id);
 
 						?>
 								<div class="item">

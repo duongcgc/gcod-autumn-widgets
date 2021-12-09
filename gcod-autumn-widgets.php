@@ -87,6 +87,7 @@ class GcoAutumnWidgets {
             // 'widget-welcome/widget-welcome.php',
             'widget-photo/widget-photo.php',
             'widget-posts/widget-posts.php',
+            // 'widget-lastest-news/widget-lastest-news.php',
             'widget-follow-us/widget-follow-us.php',
             'widget-newsletters/widget-newsletters.php',
             'widget-title/widget-title.php',
