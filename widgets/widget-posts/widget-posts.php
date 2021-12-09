@@ -31,9 +31,9 @@ class Gcowidgetpost_Widget extends WP_Widget {
 			'id' => 'style_select',
 			'type' => 'select',
 			'options' => array(
-				'Posts Style 01',
-				'Posts Style 02',
-				'Posts Style 03',
+				'Style 01',
+				'Style 02',
+				'Style 03',
 			),
 		),
 		array(
@@ -69,27 +69,27 @@ class Gcowidgetpost_Widget extends WP_Widget {
 
 		// Query all posts
 
-        if (($cat == '') && ($tag == '')) {
-            $args = array(
-            	'order'           => 'DESC',
-            	'orderby'         => $orderby,
-            	'posts_per_page'  => $number_of_item,
-        	);
-        }elseif (($cat != '') && ($tag == '')) {
-            $args = array(
-            	'order'           => 'DESC',
-            	'orderby'         => $orderby,
-            	'posts_per_page'  => $number_of_item,
+		if (($cat == '') && ($tag == '')) {
+			$args = array(
+				'order'           => 'DESC',
+				'orderby'         => $orderby,
+				'posts_per_page'  => $number_of_item,
+			);
+		} elseif (($cat != '') && ($tag == '')) {
+			$args = array(
+				'order'           => 'DESC',
+				'orderby'         => $orderby,
+				'posts_per_page'  => $number_of_item,
 				'category_name'	  => $cat
-        	);
-        }elseif (($cat == '') && ($tag != '')) {
-            $args = array(
-            	'order'           => 'DESC',
-            	'orderby'         => $orderby,
-            	'posts_per_page'  => $number_of_item,
+			);
+		} elseif (($cat == '') && ($tag != '')) {
+			$args = array(
+				'order'           => 'DESC',
+				'orderby'         => $orderby,
+				'posts_per_page'  => $number_of_item,
 				'tag'	  		  => $tag
-        	);
-        }
+			);
+		}
 
 		$the_query = new WP_Query($args);
 
@@ -110,22 +110,24 @@ class Gcowidgetpost_Widget extends WP_Widget {
 		$category_name = $instance['category_name'];
 		$tag_name = $instance['tag_name'];
 
-		echo 'sdfdfsdfsfd';
-
 		$numberposts_number = $instance['numberposts_number'];
 		if ($numberposts_number == '') {
 			$numberposts_number = 5;
 		}
+
 		$style_select = $instance['style_select'];
 
+		if ($source == 'By Category') {
+			$tag_name = '';			
+		} elseif ($source == 'By Tag') {
+			$category_name = '';
+		} else {
+			$category_name = '';
+			$tag_name = '';
+		}
 
-        if ($source == 'By Category') {	
-			$the_query = $this->gcod_query_lastest_posts($numberposts_number, $category_name);
-		}elseif ($source == 'By Tag') {
-			$the_query = $this->gcod_query_lastest_posts($numberposts_number, '', $tag_name);
-		}else {
-            $the_query = $this->gcod_query_lastest_posts($numberposts_number);
-        }
+		$the_query = $this->gcod_query_lastest_posts($numberposts_number, 'date', $category_name, $tag_name);
+
 ?>
 
 		<div class="widget_posts">
@@ -150,59 +152,6 @@ class Gcowidgetpost_Widget extends WP_Widget {
 			<div class="content__module">
 				<?php if ($style_select == 'Style 01') { ?>
 					<div class="posts__module posts__widget style-1">
-						<?php
-
-						// The Loop
-						if ($the_query->have_posts()) :
-
-							while ($the_query->have_posts()) : $the_query->the_post();
-
-								// Do Stuff
-								$categories = get_the_category();
-								$cat_name = $categories[0]->cat_name;
-								$cat_link = get_category_link($categories[0]);
-								$author_name = get_the_author();
-								$author_id = get_the_author_meta('ID');
-								$author_url = get_author_posts_url($author_id);
-
-						?>
-								<div class="item">
-									<div class="post">										 
-										<div class="image">
-											<a href="<?php echo get_the_permalink(); ?>" title="">
-												<image src="<?php the_post_thumbnail_url('gcod_thumbnail_sidebar_110'); ?>" alt="<?php echo esc_html($cat_name); ?>" />
-											</a>
-										</div>
-										<div class="content">
-											<div class="post-cat">
-												<a href="<?php echo esc_url($cat_link); ?>" title=""><?php echo esc_html($cat_name); ?></a>
-											</div>
-											<h4 class="post-name">
-												<a href="<?php echo get_the_permalink(); ?>" title=""><?php the_title(); ?></a>
-											</h4>
-											<ul class="post-meta">
-												<li>
-													<a href="<?php echo esc_url($author_url); ?>" title=""><?php echo esc_html($author_name); ?></a>
-												</li>
-												<li>
-													<span><?php echo get_the_date(); ?></span>
-												</li>
-											</ul>
-										</div>
-									</div>
-								</div> <!-- end item -->
-						<?php
-
-							endwhile;
-						endif;
-
-						// Reset Post Data
-						wp_reset_postdata();
-
-						?>
-					</div>
-				<?php } elseif ($style_select == 'Style 03') { ?>
-					<div class="posts__module posts__widget style-3">
 						<?php
 
 						// The Loop
@@ -256,106 +205,111 @@ class Gcowidgetpost_Widget extends WP_Widget {
 					</div>
 				<?php } elseif ($style_select == 'Style 02') { ?>
 					<div class="slick-slider widget-posts-slider  posts__module posts__widget style-2">
-						<div class="item">
-							<div class="post">
-								<div class="image">
-									<a href="#" title="">
-										<image src="<?php echo GCOD_AUTUMN_ELEMENTS_URL . 'assets/images/post-01.jpg'; ?>" alt="Life style" />
-									</a>
-								</div>
-								<div class="content">
-									<div class="post-cat">
-										<a href="#" title="">Lifeslite</a>
+						<?php
+
+						// The Loop
+						if ($the_query->have_posts()) :
+
+							while ($the_query->have_posts()) : $the_query->the_post();
+
+								// Do Stuff
+								$categories = get_the_category();
+								$cat_name = $categories[0]->cat_name;
+								$cat_link = get_category_link($categories[0]);
+								$author_name = get_the_author();
+								$author_id = get_the_author_meta('ID');
+								$author_url = get_author_posts_url($author_id);
+
+						?>
+								<div class="item">
+									<div class="post">
+										<div class="image">
+											<a href="<?php echo get_the_permalink(); ?>" title="">
+												<image src="<?php the_post_thumbnail_url('gcod_thumbnail_sidebar_110'); ?>" alt="<?php echo esc_html($cat_name); ?>" />
+											</a>
+										</div>
+										<div class="content">
+											<div class="post-cat">
+												<a href="<?php echo esc_url($cat_link); ?>" title=""><?php echo esc_html($cat_name); ?></a>
+											</div>
+											<h4 class="post-name">
+												<a href="<?php echo get_the_permalink(); ?>" title=""><?php the_title(); ?></a>
+											</h4>
+											<ul class="post-meta">
+												<li>
+													<a href="<?php echo esc_url($author_url); ?>" title=""><?php echo esc_html($author_name); ?></a>
+												</li>
+												<li>
+													<span><?php echo get_the_date(); ?></span>
+												</li>
+											</ul>
+										</div>
 									</div>
-									<h4 class="post-name">
-										<a href="#" title="">The unseen of spending three years at Pixelgrade</a>
-									</h4>
-									<ul class="post-meta">
-										<li>
-											<a href="#" title="">Devon Lane</a>
-										</li>
-										<li>
-											<span>October 25, 2019</span>
-										</li>
-									</ul>
-								</div>
-							</div>
-						</div> <!-- end item -->
-						<div class="item">
-							<div class="post">
-								<div class="image">
-									<a href="#" title="">
-										<image src="<?php echo GCOD_AUTUMN_ELEMENTS_URL . 'assets/images/post-02.jpg'; ?>" alt="Life style" />
-									</a>
-								</div>
-								<div class="content">
-									<div class="post-cat">
-										<a href="#" title="">Lifeslite</a>
+								</div> <!-- end item -->
+						<?php
+
+							endwhile;
+						endif;
+
+						// Reset Post Data
+						wp_reset_postdata();
+
+						?>
+					</div>
+				<?php } elseif ($style_select == 'Style 03') { ?>
+					<div class="slick-slider widget-posts-slider  posts__module posts__widget style-03">
+
+						<?php
+
+						// The Loop
+						if ($the_query->have_posts()) :
+
+							while ($the_query->have_posts()) : $the_query->the_post();
+
+								// Do Stuff
+								$categories = get_the_category();
+								$cat_name = $categories[0]->cat_name;
+								$cat_link = get_category_link($categories[0]);
+								$author_name = get_the_author();
+								$author_id = get_the_author_meta('ID');
+								$author_url = get_author_posts_url($author_id);
+
+						?>
+								<div class="item">
+									<div class="post">
+										<div class="image">
+											<a href="<?php echo get_the_permalink(); ?>" title="">
+												<image src="<?php the_post_thumbnail_url('gcod_thumbnail_sidebar_4x6'); ?>" alt="<?php echo esc_html($cat_name); ?>" />
+											</a>
+										</div>
+										<div class="content">
+											<div class="post-cat">
+												<a href="<?php echo esc_url($cat_link); ?>" title=""><?php echo esc_html($cat_name); ?></a>
+											</div>
+											<h4 class="post-name">
+												<a href="<?php echo get_the_permalink(); ?>" title=""><?php the_title(); ?></a>
+											</h4>
+											<ul class="post-meta">
+												<li>
+													<a href="<?php echo esc_url($author_url); ?>" title=""><?php echo esc_html($author_name); ?></a>
+												</li>
+												<li>
+													<span><?php echo get_the_date(); ?></span>
+												</li>
+											</ul>
+										</div>
 									</div>
-									<h4 class="post-name">
-										<a href="#" title="">The unseen of spending three years at Pixelgrade</a>
-									</h4>
-									<ul class="post-meta">
-										<li>
-											<a href="#" title="">Devon Lane</a>
-										</li>
-										<li>
-											<span>October 25, 2019</span>
-										</li>
-									</ul>
-								</div>
-							</div>
-						</div> <!-- end item -->
-						<div class="item">
-							<div class="post">
-								<div class="image">
-									<a href="#" title="">
-										<image src="<?php echo GCOD_AUTUMN_ELEMENTS_URL . 'assets/images/post-03.jpg'; ?>" alt="Life style" />
-									</a>
-								</div>
-								<div class="content">
-									<div class="post-cat">
-										<a href="#" title="">Lifeslite</a>
-									</div>
-									<h4 class="post-name">
-										<a href="#" title="">The unseen of spending three years at Pixelgrade</a>
-									</h4>
-									<ul class="post-meta">
-										<li>
-											<a href="#" title="">Devon Lane</a>
-										</li>
-										<li>
-											<span>October 25, 2019</span>
-										</li>
-									</ul>
-								</div>
-							</div>
-						</div> <!-- end item -->
-						<div class="item">
-							<div class="post">
-								<div class="image">
-									<a href="#" title="">
-										<image src="<?php echo GCOD_AUTUMN_ELEMENTS_URL . 'assets/images/post-04.jpg'; ?>" alt="Life style" />
-									</a>
-								</div>
-								<div class="content">
-									<div class="post-cat">
-										<a href="#" title="">Lifeslite</a>
-									</div>
-									<h4 class="post-name">
-										<a href="#" title="">The unseen of spending three years at Pixelgrade</a>
-									</h4>
-									<ul class="post-meta">
-										<li>
-											<a href="#" title="">Devon Lane</a>
-										</li>
-										<li>
-											<span>October 25, 2019</span>
-										</li>
-									</ul>
-								</div>
-							</div>
-						</div> <!-- end item -->
+								</div> <!-- end item -->
+						<?php
+
+							endwhile;
+						endif;
+
+						// Reset Post Data
+						wp_reset_postdata();
+
+						?>
+
 					</div>
 				<?php } ?>
 			</div>
