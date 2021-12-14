@@ -1,11 +1,11 @@
 <?php
 
 // Adds widget: GCOD Lastest News
-class Gcodlastestnews_Widget extends WP_Widget {
+class GCOD_Lastest_News_Widget extends WP_Widget {
 
 	function __construct() {
 		parent::__construct(
-			'gcodlastestnews_widget',
+			'gcod_lastest_news_widget',
 			esc_html__( 'GCOD Lastest News', 'gcodtheme' ),
 			array( 'description' => esc_html__( 'GCOD Lastest News', 'gcodtheme' ), ) // Args
 		);
@@ -70,7 +70,7 @@ class Gcodlastestnews_Widget extends WP_Widget {
 	}
 }
 
-function register_gcodlastestnews_widget() {
-	register_widget( 'Gcodlastestnews_Widget' );
+function register_gcod_lastest_news_widget() {
+	register_widget( 'GCOD_Lastest_News_Widget' );
 }
-add_action( 'widgets_init', 'register_gcodlastestnews_widget' );
+add_action( 'widgets_init', 'register_gcod_lastest_news_widget' );
