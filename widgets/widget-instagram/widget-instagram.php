@@ -1,24 +1,32 @@
 <?php
 
-// Adds widget: Gco Widget Newsletters
-class Gcowidgetnewsletters_Widget extends WP_Widget {
+// Adds widget: GCO Instagram Widget
+class GCO_Instagram_Widget extends WP_Widget {
 
 	function __construct() {
 		parent::__construct(
-			'gcowidgetnewsletters_widget',
-			esc_html__( 'Gco Widget Newsletters', 'textdomain' )
+			'gco_instagram_widget',
+			esc_html__( 'GCO Instagram Widget', 'textdomain' )
 		);
 	}
 
 	private $widget_fields = array(
+
 		array(
 			'label' => 'Title',
 			'id' => 'title_text',
 			'type' => 'text',
 		),
+
 		array(
-			'label' => 'Form Shortcode',
-			'id' => 'newsletter_shortcode',
+			'label' => 'Instagram Shortcode',
+			'id' => 'instagram_shortcode',
+			'type' => 'text',
+		),
+
+		array(
+			'label' => 'Instagram Follow',
+			'id' => 'instagram_follow',
 			'type' => 'text',
 		),
 	);
@@ -32,7 +40,10 @@ class Gcowidgetnewsletters_Widget extends WP_Widget {
 
 		// Output generated fields
 		$title_text = $instance['title_text'];
-		$newsletter_shortcode = $instance['newsletter_shortcode']; ?>
+		$instagram_shortcode = $instance['instagram_shortcode']; 
+		$instagram_follow = $instance['instagram_follow']; 
+		
+		?>
 
 		<div class="widget_posts">
 			<?php if ($title_text) { ?>
@@ -43,11 +54,17 @@ class Gcowidgetnewsletters_Widget extends WP_Widget {
 			   </div>
 			<?php } ?>
 
+			<?php if ($instagram_shortcode != '') : ?>
 			<div class="content__module">
-				<div class="newsletters__module newsletters__widget">
-					<?php echo do_shortcode($newsletter_shortcode); ?>
+				<div class="instagram__module instagram__widget">
+					<?php echo do_shortcode($instagram_shortcode); ?>
+				</div>
+
+				<div class="post-button is-style-outline">
+					<a href="<?php echo $instagram_follow; ?>" class="btn wp-block-button__link">Follow</a>
 				</div>
 			</div>
+			<?php endif; ?>
 		</div>
 		
 		<?php echo $args['after_widget'];
@@ -89,7 +106,7 @@ class Gcowidgetnewsletters_Widget extends WP_Widget {
 	}
 }
 
-function register_gcowidgetnewsletters_widget() {
-	register_widget( 'Gcowidgetnewsletters_Widget' );
+function register_gco_instagram_widget() {
+	register_widget( 'GCO_Instagram_Widget' );
 }
-add_action( 'widgets_init', 'register_gcowidgetnewsletters_widget' );
+add_action( 'widgets_init', 'register_gco_instagram_widget' );
