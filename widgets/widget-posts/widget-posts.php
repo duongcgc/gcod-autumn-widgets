@@ -34,6 +34,7 @@ class Gcowidgetpost_Widget extends WP_Widget {
 				'Style 01',
 				'Style 02',
 				'Style 03',
+				'Style 04',
 			),
 		),
 		array(
@@ -118,7 +119,7 @@ class Gcowidgetpost_Widget extends WP_Widget {
 		$style_select = $instance['style_select'];
 
 		if ($source == 'By Category') {
-			$tag_name = '';			
+			$tag_name = '';
 		} elseif ($source == 'By Tag') {
 			$category_name = '';
 		} else {
@@ -286,6 +287,62 @@ class Gcowidgetpost_Widget extends WP_Widget {
 											<div class="post-cat">
 												<a href="<?php echo esc_url($cat_link); ?>" title=""><?php echo esc_html($cat_name); ?></a>
 											</div>
+											<h4 class="post-name">
+												<a href="<?php echo get_the_permalink(); ?>" title=""><?php the_title(); ?></a>
+											</h4>
+											<ul class="post-meta">
+												<li>
+													<a href="<?php echo esc_url($author_url); ?>" title=""><?php echo esc_html($author_name); ?></a>
+												</li>
+												<li>
+													<span><?php echo get_the_date(); ?></span>
+												</li>
+											</ul>
+										</div>
+									</div>
+								</div> <!-- end item -->
+						<?php
+
+							endwhile;
+						endif;
+
+						// Reset Post Data
+						wp_reset_postdata();
+
+						?>
+
+					</div>
+				<?php } elseif ($style_select == 'Style 04') { ?>
+					<div class="slick-slider widget-posts-slider  posts__module posts__widget style-04">
+
+						<?php
+
+						// The Loop
+						if ($the_query->have_posts()) :
+
+							while ($the_query->have_posts()) : $the_query->the_post();
+
+								// Do Stuff
+								$categories = get_the_category();
+								$cat_name = $categories[0]->cat_name;
+								$cat_link = get_category_link($categories[0]);
+								$author_name = get_the_author();
+								$author_id = get_the_author_meta('ID');
+								$author_url = get_author_posts_url($author_id);
+
+						?>
+								<div class="item">
+									<div class="post">
+										<div class="post-cat">
+											<a href="<?php echo esc_url($cat_link); ?>" title=""><?php echo esc_html($cat_name); ?></a>
+										</div>
+
+										<div class="image">
+											<a href="<?php echo get_the_permalink(); ?>" title="">
+												<image src="<?php the_post_thumbnail_url('gcod_thumbnail_category'); ?>" alt="<?php echo esc_html($cat_name); ?>" />
+											</a>
+										</div>
+										<div class="content">
 											<h4 class="post-name">
 												<a href="<?php echo get_the_permalink(); ?>" title=""><?php the_title(); ?></a>
 											</h4>
